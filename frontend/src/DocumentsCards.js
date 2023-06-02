@@ -7,6 +7,9 @@ import BrowseTools from './BrowseTools';
 import FutureDocument from './FutureDocument';
 import FutureCollection from './FutureCollection';
 import { TypeBadge } from './Type';
+import {createContext} from 'react';
+
+const TypesContext = createContext([]);
 
 function DocumentsCards({docs, expandable, byRow, createOn, setLastUpdate, backend}) {
   return (
@@ -55,4 +58,5 @@ function References({doc}) {
   );
 }
 
+export {TypesContext};
 export default DocumentsCards;

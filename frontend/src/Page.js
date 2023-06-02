@@ -12,9 +12,11 @@ import BrowseTools from './BrowseTools';
 import EditableText from './EditableText';
 import FormattedText from './FormattedText';
 import Type, { TypeBadge } from './Type';
+import {TypesContext} from './DocumentsCards';
 
 function Page({backend}) {
 
+  const [types, setTypes] = useState([]);
   const [page, setPage] = useState([]);
   const [metadata, setMetadata] = useState([]);
   const [sourceMetadata, setSourceMetadata] = useState();
@@ -36,6 +38,12 @@ function Page({backend}) {
         (rows) => {
           let documents = rows.map(x => x.doc);
           setMetadata(documents);
+        }
+      );
+    backend.getView({view: 'types', options: ['include_docs']})
+      .then(
+        (rows) => {
+          setTypes(rows);
         }
       );
     backend.getView({view: 'content', id, options: ['include_docs']})
@@ -104,29 +112,26 @@ function Page({backend}) {
   }, [id, margin, content]);
 
   return (
-    <Container className="screen">
-      <Row>
-        <Col md={2} className="sources">
-          <DocumentsCards docs={sourcesOfSourceMetadata} byRow={1} />
-        </Col>
-        <Col className="page">
-          <Row className ="runningHead">
-            <RunningHeadSource metadata={ sourceMetadata } />
-            <RunningHeadMargin {...{backend}}
-              metadata={ metadata.find(x => (x._id === margin)) }
-            />
-          </Row>
-          {page.map(({rubric, source, scholia}, i) =>
-            <Passage key={rubric || i}
-              {...{source, rubric, scholia, margin, backend}}
-            />)
-          }
-        </Col>
-        <References scholiaMetadata={scholiaMetadata} active={!margin}
-          createOn={[id]} {...{setLastUpdate, backend}}
-        />
-      </Row>
-    </Container>
+    <TypesContext.Provider value={types}>
+      <Container className="screen">
+        <Row>
+          <Col md={2} className="sources">
+            <DocumentsCards docs={sourcesOfSourceMetadata} types={types} byRow={1}/>
+          </Col>
+          <Col className="page">
+            <Row className="runningHead">
+              <RunningHeadSource metadata={sourceMetadata}/>
+              <RunningHeadMargin {...{backend}} metadata={metadata.find(x => (x._id === margin))}/>
+            </Row>
+            {page.map(({rubric, source, scholia}, i) =>
+              <Passage key={rubric || i} {...{source, rubric, scholia, margin, backend}}
+              />)
+            }
+          </Col>
+          <References scholiaMetadata={scholiaMetadata} types={types} active={!margin} createOn={[id]} {...{setLastUpdate, backend}}/>
+        </Row>
+      </Container>
+    </TypesContext.Provider>
   );
 }
 
@@ -189,13 +194,15 @@ function RunningHeadMargin({metadata, backend}) {
   );
 }
 
-function References({scholiaMetadata, active, createOn, setLastUpdate, backend}) {
+function References({scholiaMetadata, types, active, createOn, setLastUpdate, backend}) {
   if (!active) return;
   return (
-    <Col className="gloses" >
-      <DocumentsCards docs={scholiaMetadata} expandable={true} byRow={1}
-        {...{createOn, setLastUpdate, backend}}
-      />
+    <Col className="gloses">
+      <DocumentsCards docs={scholiaMetadata} types={types} expandable={true} byRow={1} {...{
+        createOn,
+        setLastUpdate,
+        backend
+      }}/>
     </Col>
   );
 }
