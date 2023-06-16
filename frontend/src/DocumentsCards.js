@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { useMemo } from 'react';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
@@ -8,8 +7,8 @@ import BrowseTools from './BrowseTools';
 import FutureDocument from './FutureDocument';
 import FutureCollection from './FutureCollection';
 import { TypeBadge } from './Type';
-import {createContext} from 'react';
 import { isPhoneSizedWindow } from './utils';
+import { createContext } from 'react';
 
 const TypesContext = createContext([]);
 
@@ -45,7 +44,7 @@ export function DocumentCard({doc, expandable}) {
       return doc.links.every((item) => {
         return item.verb === 'includes';
       }) ? doc._id : undefined;
-    };
+    }
     return undefined;
   }, [doc]);
 
