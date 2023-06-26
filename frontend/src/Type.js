@@ -12,17 +12,17 @@ export function TypeBadge({ type, addClassName }) {
   const typeSelected = types.find((t) => t.id === type);
   if (!typeSelected) return;
   return <div style={{backgroundColor: typeSelected.doc.color}} className={`typeBadge ${addClassName ?? ''}`}>
-    {typeSelected.doc.type_name.replaceAll('/', '/\u200B')}
+    {typeSelected.doc.type_name.replace('/', '/\u200B')}
   </div>;
 }
 
 function TypeList({ typeSelected, handleUpdate }) {
   const types = useContext(TypesContext);
   return (
-    <>
+    <div id="typeList">
       <h6 style={{ textAlign: 'left' }}>Select a type</h6>
       <ListGroup style={{ textAlign: 'center', paddingTop: 0, paddingBottom: 20 }}>
-        {types.map((type, index) =>
+        {types?.map((type, index) =>
           <ListGroup.Item action
             key={index}
             style={{ backgroundColor: type === typeSelected ? 'grey' : '' }}
@@ -39,7 +39,7 @@ function TypeList({ typeSelected, handleUpdate }) {
           </ListGroup.Item>
           : null}
       </ListGroup>
-    </>
+    </div>
   );
 }
 

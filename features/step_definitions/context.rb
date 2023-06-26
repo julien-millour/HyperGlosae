@@ -77,4 +77,3 @@ Soit('un document existant contenant :') do |markdown|
   click_on_icon('focus')
   sign_out
 end
-

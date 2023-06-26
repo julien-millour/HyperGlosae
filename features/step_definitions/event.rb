@@ -30,4 +30,3 @@ end
 Quand('je crée une collection à partir de ce document') do
   click_on_icon('create-collection')
 end
-
